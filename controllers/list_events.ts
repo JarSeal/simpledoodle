@@ -3,8 +3,7 @@ import Event from './../models/event';
 
 const listEventsRouter = express.Router();
 
-listEventsRouter.get('/', async (request, response) => {
-    // Todo: display only id and name
+listEventsRouter.get('/list', async (request, response) => {
     const result = await Event.find({});
     const idAndName = result.map(item => { return { id: item.id, name: item.name }; });
     response.json(idAndName);
