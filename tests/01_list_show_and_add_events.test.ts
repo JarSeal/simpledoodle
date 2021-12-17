@@ -10,9 +10,9 @@ beforeAll(async () => {
     await Event.deleteMany({});
 });
 
-console.log('HERE1');
+describe('API tests for list, add, and show events', () => {
+    let oneEventId;
 
-describe('API tests for list and add events', () => {
     it('no events should be found', async () => {
         const response = await api.get('/api/v1/event/list');
         expect(response.body.length).toBe(0);
@@ -25,6 +25,7 @@ describe('API tests for list and add events', () => {
         expect(event1.body.id.length === 24).toBe(true);
         expect(event2.body.id.length === 24).toBe(true);
         expect(event3.body.id.length === 24).toBe(true);
+        oneEventId = event3.body.id;
     });
 
     it('three events should be found', async () => {
@@ -59,6 +60,14 @@ describe('API tests for list and add events', () => {
         expect(event2.body.errorCode === 'invalidDate').toBe(true);
         expect(event3.body.errorCode === 'invalidDate').toBe(true);
         expect(event4.body.errorCode === 'invalidDate').toBe(true);
+    });
+
+    it('show event should show all event info', async () => {
+        const event1 = await api.get('/api/v1/event/' + oneEventId);
+        expect(event1.body.id === oneEventId).toBe(true);
+        expect(event1.body.dates.length).toBe(3);
+        expect(event1.body.name).toBe('My new event number 3');
+        expect(event1.body.votes.length).toBe(0);
     });
 });
 
