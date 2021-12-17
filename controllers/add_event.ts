@@ -12,14 +12,12 @@ addEventRouter.post('/', async (request, response) => {
     const nameValidationError = validateName(body.name);
     if(nameValidationError) {
         logger.log('Name validation backend error.', nameValidationError); // Validation errors should be caught in frontend, so this error should be logged
-        response.json(nameValidationError);
-        return;
+        return response.json(nameValidationError);
     }
     const datesValidationError = validateDates(body.dates);
     if(datesValidationError) {
         logger.log('Data format validation backend error.', datesValidationError); // Validation errors should be caught in frontend, so this error should be logged
-        response.json(datesValidationError);
-        return;
+        return response.json(datesValidationError);
     }
     
     // No errors, try saving the data to DB
