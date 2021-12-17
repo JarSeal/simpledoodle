@@ -5,7 +5,7 @@ const listEventsRouter = express.Router();
 
 listEventsRouter.get('/list', async (request, response) => {
     const result = await Event.find({});
-    const idAndName = result.map(item => { return { id: item.id, name: item.name }; });
+    const idAndName = result.map(item => { return { id: item.id, name: item['name'] }; });
     response.json(idAndName);
 });
 

@@ -2,13 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import logger from './../utils/logger';
 import Event from './../models/event';
+import { eventType, voteDataType } from '../interfaces/event.interface';
 
 const addVotesRouter = express.Router();
-
-interface voteData {
-    name: string,
-    votes: [string],
-}
 
 addVotesRouter.post('/:id/vote', async (request, response) => {
     const id = request.params ? request.params['id'] : null;
@@ -32,9 +28,9 @@ addVotesRouter.post('/:id/vote', async (request, response) => {
 
     // Migrate new data to old
     const newData = migrateVotesData(event, body);
-    console.log(newData);
+    console.log(newData, 'EVENT', event, 'BODY', body);
 
-    response.json({msg:'lilsomething', newData: newData});
+    response.json({msg:'lilsomething', newData, event, body });
 
     // No errors, try updating the data
     // Event.findByIdAndUpdate(id, newData, (err, result) => {
@@ -57,7 +53,7 @@ addVotesRouter.post('/:id/vote', async (request, response) => {
     // }
 });
 
-const validateVoteDates = (event: Event, newData: voteData) => {
+const validateVoteDates = (event: eventType, newData: voteDataType) => {
     const newDates = newData.votes;
     for(let i=0; i<event.dates.length; i++) {
         if(!newDates.includes(event.dates[i])) {
@@ -72,7 +68,7 @@ const validateVoteDates = (event: Event, newData: voteData) => {
     return null; // No errors found
 };
 
-const migrateVotesData = (event: Event, newData: voteData) => {
+const migrateVotesData = (event: eventType, newData: voteDataType) => {
     if(!newData.votes) return event;
 
     for(let i=0; i<newData.votes.length; i++) {

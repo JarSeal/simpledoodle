@@ -1,16 +1,8 @@
 import mongoose from 'mongoose';
 import config from './../utils/config';
+import { eventType } from '../interfaces/event.interface';
 
-interface Event {
-    name: string,
-    dates: [string],
-    votes: [{
-        date: string,
-        people: [string],
-    }],
-}
-
-const eventSchema = new mongoose.Schema<Event>({
+const eventSchema = new mongoose.Schema<eventType>({
     name: {
         type: String,
         required: true,
@@ -27,6 +19,7 @@ const eventSchema = new mongoose.Schema<Event>({
     ],
     votes: [
         {
+            _id: false,
             date: {
                 type: String,
                 required: true,
