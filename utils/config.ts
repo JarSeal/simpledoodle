@@ -4,10 +4,11 @@ dotenv.config();
 const EVENT_VALIDATION = {
     name: {
         minlength: 3,
-        maxlength: 6,
+        maxlength: 60,
     },
-    date: {
-        regex: /^\d{4}-\d{2}-\d{2}$/,
+    participantName: {
+        minlength: 2,
+        maxlength: 25,
     },
 };
 
