@@ -1,16 +1,21 @@
 import mongoose from 'mongoose';
+import config from './../utils/config';
 
 interface Event {
     name: string,
     dates: [string],
-    votes: [string],
+    votes: [{
+        date: string,
+        people: [string],
+    }],
 }
 
 const eventSchema = new mongoose.Schema<Event>({
     name: {
         type: String,
         required: true,
-        minlength: 3,
+        minlength: config.EVENT_VALIDATION.name.minlength,
+        maxlength: config.EVENT_VALIDATION.name.maxlength,
     },
     dates: [
         {
@@ -31,7 +36,8 @@ const eventSchema = new mongoose.Schema<Event>({
             people: [
                 {
                     type: String,
-                    minlength: 2,
+                    minlength: config.EVENT_VALIDATION.participantName.minlength,
+                    maxlength: config.EVENT_VALIDATION.participantName.maxlength,
                 },
             ],
         },
