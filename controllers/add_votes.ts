@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import logger from './../utils/logger';
+import config from '../utils/config';
 import Event from './../models/event';
 import { eventType, voteDataType } from '../interfaces/event.interface';
 
@@ -14,10 +15,17 @@ addVotesRouter.post('/:id/vote', async (request, response) => {
         if(event) eventNotFound = false;
     }
     if(eventNotFound) {
-        return response.status(404).json({ errorMsg: 'Event not found.' });
+        return response.status(404).json({ errorMsg: 'Event not found.', errorCode: 'eventNotFound' });
     }
 
     const body = request.body;
+
+    // Validate participant name
+    const participantNameError = validateParticipantName(body.name);
+    if(participantNameError) {
+        logger.log('Participant name fail.', participantNameError);
+        return response.json(participantNameError);
+    }
     
     // Validate vote dates
     const dateValidationError = validateVoteDates(event, body);
@@ -28,35 +36,48 @@ addVotesRouter.post('/:id/vote', async (request, response) => {
 
     // Migrate new data to old
     const newData = migrateVotesData(event, body);
-    console.log(newData, 'EVENT', event, 'BODY', body);
-
-    response.json({msg:'lilsomething', newData, event, body });
 
     // No errors, try updating the data
-    // Event.findByIdAndUpdate(id, newData, (err, result) => {
-    //     response.json(result);
-    // });
-
-    // No errors, try saving the data to DB
-    // try {
-    //     const event = new Event({
-    //         name: body.name.trim(),
-    //         dates: body.dates || [],
-    //     });
-    //     const savedEvent = await event.save();
-    //     response.json({
-    //         id: savedEvent.id
-    //     });
-    // } catch(e) {
-    //     logger.error('Could not save event.', e);
-    //     response.status(500).json({ errorMsg: 'Could not save event.' });
-    // }
+    try {
+        await Event.findByIdAndUpdate(id, newData);
+        response.json(newData);
+    } catch(e) {
+        logger.error('Could not add votes.', e);
+        response.status(500).json({ errorMsg: 'Could not add votes.' });
+    }
 });
+
+const validateParticipantName = (name) => {
+    const nameRequirements = config.EVENT_VALIDATION.participantName;
+    if(!name || name.length < nameRequirements.minlength) {
+        return {
+            errorMsg: `Participant name is missing or too short (minlength ${nameRequirements.minlength} chars).`,
+            errorField: 'name',
+            errorCode: 'participantNameMissingOrTooShort',
+        };
+    }
+    if(name.length > nameRequirements.maxlength) {
+        return {
+            errorMsg: `Participant name is too long (maxlength ${nameRequirements.maxlength} chars).`,
+            errorField: 'name',
+            errorCode: 'participantNameTooLong',
+        };
+    }
+
+    return null; // No errors
+};
 
 const validateVoteDates = (event: eventType, newData: voteDataType) => {
     const newDates = newData.votes;
-    for(let i=0; i<event.dates.length; i++) {
-        if(!newDates.includes(event.dates[i])) {
+    if(!newDates || !newDates.length) {
+        return {
+            errorMsg: 'At least one vote date is required.',
+            errorField: 'votes',
+            errorCode: 'votesIsRequired',
+        };
+    }
+    for(let i=0; i<newDates.length; i++) {
+        if(!event.dates.includes(newDates[i])) {
             return {
                 errorMsg: 'Voted date was not an option.',
                 errorField: 'votes',
