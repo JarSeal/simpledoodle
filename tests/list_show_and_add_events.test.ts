@@ -72,5 +72,6 @@ describe('API tests for list, add, and show events', () => {
 });
 
 afterAll(async () => {
+    await Event.deleteMany({});
     await mongoose.connection.close();
 });
