@@ -5,6 +5,7 @@ import listEventsRouter from './controllers/list_events';
 import addEventRouter from './controllers/add_event';
 import showEventRouter from './controllers/show_event';
 import addVotesRouter from './controllers/add_votes';
+import showResultsRouter from './controllers/show_results';
 import middleware from './utils/middleware';
 import logger from './utils/logger';
 
@@ -17,7 +18,7 @@ mongoose.connect(config.MONGODB_URI, {
     useCreateIndex: true
 }).then(() => {
     logger.info('connected to MongoDB');
-}).catch((error) => {
+}).catch((error: Error) => {
     logger.error('error connection to MongoDB:', error.message);
 });
 
@@ -28,6 +29,7 @@ app.use(middleware.requestLogger);
 
 const baseUrl = '/api/v1/event';
 app.use(baseUrl, listEventsRouter);
+app.use(baseUrl, showResultsRouter);
 app.use(baseUrl, addVotesRouter);
 app.use(baseUrl, showEventRouter);
 app.use(baseUrl, addEventRouter);
