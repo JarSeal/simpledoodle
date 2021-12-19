@@ -4,10 +4,11 @@ import logger from './../utils/logger';
 import config from '../utils/config';
 import Event from './../models/event';
 import { eventType, voteDataType } from '../interfaces/event.interface';
+import { Request, Response } from 'express';
 
 const addVotesRouter = express.Router();
 
-addVotesRouter.post('/:id/vote', async (request, response) => {
+addVotesRouter.post('/:id/vote', async (request: Request, response: Response) => {
     const id = request.params ? request.params['id'] : null;
     let eventNotFound = true, event;
     if(mongoose.Types.ObjectId.isValid(id)) {
@@ -47,7 +48,7 @@ addVotesRouter.post('/:id/vote', async (request, response) => {
     }
 });
 
-const validateParticipantName = (name) => {
+const validateParticipantName = (name: string) => {
     const nameRequirements = config.EVENT_VALIDATION.participantName;
     if(!name || name.length < nameRequirements.minlength) {
         return {

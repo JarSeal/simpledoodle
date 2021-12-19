@@ -2,10 +2,11 @@ import express from 'express';
 import config from './../utils/config';
 import logger from './../utils/logger';
 import Event from './../models/event';
+import { Request, Response } from 'express';
 
 const addEventRouter = express.Router();
 
-addEventRouter.post('/', async (request, response) => {
+addEventRouter.post('/', async (request: Request, response: Response) => {
     const body = request.body;
 
     // Validate the name and dates

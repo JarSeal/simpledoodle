@@ -5,6 +5,7 @@ export interface eventType {
         date: string,
         people: [string],
     }],
+    id?: string,
 }
 
 export interface voteDataType {
