@@ -42,7 +42,9 @@
     "jest": {
         "preset": "ts-jest",
         "testEnvironment": "node",
-        "testPathIgnorePatterns": ["/dist/"],
+        "testPathIgnorePatterns": [
+            "/dist/"
+        ],
         "coveragePathIgnorePatterns": [
             "/node_modules/"
         ]
