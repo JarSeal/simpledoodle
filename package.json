@@ -5,6 +5,7 @@
     "main": "dist/",
     "scripts": {
         "dev": "npm run startMongo && tsc --watch & cross-env NODE_ENV=development nodemon /dist/",
+        "start": "npm run test && npm run startMongo && tsc && cross-env NODE_ENV=production node dist/",
         "lint": "eslint . --ext .ts",
         "test": "npm run startMongo && cross-env NODE_ENV=test jest -u --verbose --runInBand --detectOpenHandles",
         "startMongo": "docker-compose up -d",
