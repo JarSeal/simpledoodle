@@ -4,7 +4,7 @@ A backend and DB for a simple "group happening" API.
 
 ## Requirements
 
-- node
+- node (v14.18.0 or above)
 - docker
 - docker-compose
 
@@ -13,6 +13,13 @@ A backend and DB for a simple "group happening" API.
 Setup everything:
 ```bash
 npm install
+```
+
+Create a '.env' file in the root folder and configure:
+```
+PORT=<PORT NUMBER HERE>
+MONGODB_URI=mongodb://localhost:27017/<DB NAME HERE>
+TEST_MONGODB_URI=mongodb://localhost:27017/<TEST DB NAME HERE>
 ```
 
 ## Development
