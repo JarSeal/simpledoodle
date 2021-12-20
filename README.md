@@ -34,6 +34,11 @@ Tests:
 npm run test
 ```
 
+Start production:
+```bash
+npm start
+```
+
 Mongo CLI:
 ```bash
 npm run devMongo
